@@ -85,6 +85,21 @@ export const criticalObligations = pgTable('critical_obligations', {
   updatedAt: timestamp('updated_at').notNull().defaultNow(),
 });
 
+export const obligationNotifications = pgTable('obligation_notifications', {
+  id: serial('id').primaryKey(),
+  obligationId: integer('obligation_id')
+    .notNull()
+    .references(() => criticalObligations.id),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  type: varchar('type', { length: 20 }).notNull(), // EMAIL, SYSTEM
+  daysBeforeDeadline: integer('days_before_deadline').notNull(),
+  sentAt: timestamp('sent_at').notNull().defaultNow(),
+  success: varchar('success', { length: 10 }).notNull().default('true'),
+  errorMessage: text('error_message'),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
@@ -94,6 +109,7 @@ export const teamsRelations = relations(teams, ({ many }) => ({
 export const usersRelations = relations(users, ({ many }) => ({
   teamMembers: many(teamMembers),
   invitationsSent: many(invitations),
+  obligationNotifications: many(obligationNotifications),
 }));
 
 export const invitationsRelations = relations(invitations, ({ one }) => ({
@@ -131,7 +147,7 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
 
 export const criticalObligationsRelations = relations(
   criticalObligations,
-  ({ one }) => ({
+  ({ one, many }) => ({
     user: one(users, {
       fields: [criticalObligations.userId],
       references: [users.id],
@@ -140,8 +156,20 @@ export const criticalObligationsRelations = relations(
       fields: [criticalObligations.teamId],
       references: [teams.id],
     }),
+    notifications: many(obligationNotifications),
   })
 );
+
+export const obligationNotificationsRelations = relations(obligationNotifications, ({ one }) => ({
+  obligation: one(criticalObligations, {
+    fields: [obligationNotifications.obligationId],
+    references: [criticalObligations.id],
+  }),
+  user: one(users, {
+    fields: [obligationNotifications.userId],
+    references: [users.id],
+  }),
+}));
 
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -161,6 +189,8 @@ export type TeamDataWithMembers = Team & {
 
 export type CriticalObligation = typeof criticalObligations.$inferSelect;
 export type NewCriticalObligation = typeof criticalObligations.$inferInsert;
+export type ObligationNotification = typeof obligationNotifications.$inferSelect;
+export type NewObligationNotification = typeof obligationNotifications.$inferInsert;
 
 export enum ActivityType {
   SIGN_UP = 'SIGN_UP',
@@ -195,4 +225,9 @@ export enum ObligationStatus {
   ACTIVE = 'ACTIVE',
   HANDLED = 'HANDLED',
   EXPIRED = 'EXPIRED',
+}
+
+export enum NotificationType {
+  EMAIL = 'EMAIL',
+  SYSTEM = 'SYSTEM',
 }
