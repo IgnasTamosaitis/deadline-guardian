@@ -109,16 +109,38 @@ function ObligationCard({ obligation }: { obligation: CriticalObligation }) {
   async function handleMarkHandled() {
     if (confirm('Mark this obligation as handled?')) {
       setIsMarking(true);
-      await markObligationAsHandled(obligation.id);
-      router.refresh();
+      try {
+        const result = await markObligationAsHandled(obligation.id);
+        if (result.error) {
+          alert('Failed to mark as handled: ' + result.error);
+        } else {
+          window.location.reload();
+        }
+      } catch (error) {
+        alert('An error occurred while marking as handled');
+        console.error(error);
+      } finally {
+        setIsMarking(false);
+      }
     }
   }
   
   async function handleDelete() {
-    if (confirm('Are you sure you want to delete this obligation?')) {
+    if (confirm('Are you sure you want to delete this obligation? This cannot be undone.')) {
       setIsDeleting(true);
-      await deleteObligation(obligation.id);
-      router.refresh();
+      try {
+        const result = await deleteObligation(obligation.id);
+        if (result.error) {
+          alert('Failed to delete: ' + result.error);
+          setIsDeleting(false);
+        } else {
+          window.location.reload();
+        }
+      } catch (error) {
+        alert('An error occurred while deleting');
+        console.error(error);
+        setIsDeleting(false);
+      }
     }
   }
   

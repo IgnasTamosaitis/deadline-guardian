@@ -79,10 +79,15 @@ export async function createObligation(formData: FormData) {
   }
 }
 
-export async function updateObligation(id: number, formData: FormData) {
+export async function updateObligation(formData: FormData) {
   const user = await getUser();
   if (!user) {
     return { error: 'Unauthorized' };
+  }
+
+  const id = parseInt(formData.get('id') as string);
+  if (!id || isNaN(id)) {
+    return { error: 'Invalid obligation ID' };
   }
 
   const validated = obligationSchema.safeParse({
