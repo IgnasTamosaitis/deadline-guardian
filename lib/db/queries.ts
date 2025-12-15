@@ -1,6 +1,13 @@
-import { desc, and, eq, isNull } from 'drizzle-orm';
+import { desc, and, eq, isNull, lt, lte, gte } from 'drizzle-orm';
 import { db } from './drizzle';
-import { activityLogs, teamMembers, teams, users } from './schema';
+import {
+  activityLogs,
+  teamMembers,
+  teams,
+  users,
+  criticalObligations,
+  ObligationStatus,
+} from './schema';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth/session';
 
@@ -127,4 +134,81 @@ export async function getTeamForUser() {
   });
 
   return result?.team || null;
+}
+
+// Critical Obligations Queries
+export async function getObligationsForUser() {
+  const user = await getUser();
+  if (!user) {
+    return [];
+  }
+
+  return await db
+    .select()
+    .from(criticalObligations)
+    .where(eq(criticalObligations.userId, user.id))
+    .orderBy(criticalObligations.deadlineAt);
+}
+
+export async function getActiveObligationsCount() {
+  const user = await getUser();
+  if (!user) {
+    return 0;
+  }
+
+  const result = await db
+    .select()
+    .from(criticalObligations)
+    .where(
+      and(
+        eq(criticalObligations.userId, user.id),
+        eq(criticalObligations.status, ObligationStatus.ACTIVE)
+      )
+    );
+
+  return result.length;
+}
+
+export async function getObligationById(id: number) {
+  const user = await getUser();
+  if (!user) {
+    return null;
+  }
+
+  const result = await db
+    .select()
+    .from(criticalObligations)
+    .where(
+      and(
+        eq(criticalObligations.id, id),
+        eq(criticalObligations.userId, user.id)
+      )
+    )
+    .limit(1);
+
+  return result.length > 0 ? result[0] : null;
+}
+
+export async function getUpcomingObligations(daysAhead: number = 30) {
+  const user = await getUser();
+  if (!user) {
+    return [];
+  }
+
+  const now = new Date();
+  const futureDate = new Date();
+  futureDate.setDate(futureDate.getDate() + daysAhead);
+
+  return await db
+    .select()
+    .from(criticalObligations)
+    .where(
+      and(
+        eq(criticalObligations.userId, user.id),
+        eq(criticalObligations.status, ObligationStatus.ACTIVE),
+        gte(criticalObligations.deadlineAt, now),
+        lte(criticalObligations.deadlineAt, futureDate)
+      )
+    )
+    .orderBy(criticalObligations.deadlineAt);
 }
