@@ -68,6 +68,23 @@ export const invitations = pgTable('invitations', {
   status: varchar('status', { length: 20 }).notNull().default('pending'),
 });
 
+export const criticalObligations = pgTable('critical_obligations', {
+  id: serial('id').primaryKey(),
+  userId: integer('user_id')
+    .notNull()
+    .references(() => users.id),
+  teamId: integer('team_id').references(() => teams.id),
+  title: varchar('title', { length: 255 }).notNull(),
+  category: varchar('category', { length: 50 }).notNull(),
+  deadlineAt: timestamp('deadline_at').notNull(),
+  consequence: text('consequence').notNull(),
+  severity: varchar('severity', { length: 20 }).notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('ACTIVE'),
+  lastNotificationAt: timestamp('last_notification_at'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+});
+
 export const teamsRelations = relations(teams, ({ many }) => ({
   teamMembers: many(teamMembers),
   activityLogs: many(activityLogs),
@@ -112,6 +129,20 @@ export const activityLogsRelations = relations(activityLogs, ({ one }) => ({
   }),
 }));
 
+export const criticalObligationsRelations = relations(
+  criticalObligations,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [criticalObligations.userId],
+      references: [users.id],
+    }),
+    team: one(teams, {
+      fields: [criticalObligations.teamId],
+      references: [teams.id],
+    }),
+  })
+);
+
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
 export type Team = typeof teams.$inferSelect;
@@ -128,6 +159,9 @@ export type TeamDataWithMembers = Team & {
   })[];
 };
 
+export type CriticalObligation = typeof criticalObligations.$inferSelect;
+export type NewCriticalObligation = typeof criticalObligations.$inferInsert;
+
 export enum ActivityType {
   SIGN_UP = 'SIGN_UP',
   SIGN_IN = 'SIGN_IN',
@@ -139,4 +173,26 @@ export enum ActivityType {
   REMOVE_TEAM_MEMBER = 'REMOVE_TEAM_MEMBER',
   INVITE_TEAM_MEMBER = 'INVITE_TEAM_MEMBER',
   ACCEPT_INVITATION = 'ACCEPT_INVITATION',
+}
+
+export enum ObligationCategory {
+  TAX = 'tax',
+  SUBSCRIPTION = 'subscription',
+  LEGAL = 'legal',
+  PERSONAL = 'personal',
+  BUSINESS = 'business',
+  OTHER = 'other',
+}
+
+export enum ObligationSeverity {
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL',
+}
+
+export enum ObligationStatus {
+  ACTIVE = 'ACTIVE',
+  HANDLED = 'HANDLED',
+  EXPIRED = 'EXPIRED',
 }
