@@ -322,7 +322,7 @@ export default function ObligationsPage() {
         </div>
       
         {!hasSubscription && (
-          <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 shadow-md">
+          <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 shadow-md mb-8">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
