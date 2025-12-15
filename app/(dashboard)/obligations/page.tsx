@@ -323,16 +323,18 @@ export default function ObligationsPage() {
       
         {!hasSubscription && (
           <Card className="border-2 border-orange-200 bg-gradient-to-r from-orange-50 to-amber-50 shadow-md mb-8">
-            <CardHeader className="flex items-center justify-center pb-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
-                  <AlertTriangle className="h-5 w-5 text-orange-600" />
-                </div>
-                <div className="flex-1">
-                  <CardTitle className="text-orange-900 text-lg">Free Tier Limits</CardTitle>
-                  <CardDescription className="text-orange-700 mt-1">
-                    You're using {activeCount} of 2 active obligations
-                  </CardDescription>
+            <CardHeader className="pb-4">
+              <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-orange-100 flex items-center justify-center">
+                    <AlertTriangle className="h-5 w-5 text-orange-600" />
+                  </div>
+                  <div>
+                    <CardTitle className="text-orange-900 text-lg">Free Tier Limits</CardTitle>
+                    <CardDescription className="text-orange-700 mt-1">
+                      You're using {activeCount} of 2 active obligations
+                    </CardDescription>
+                  </div>
                 </div>
                 <Button 
                   variant="outline" 
