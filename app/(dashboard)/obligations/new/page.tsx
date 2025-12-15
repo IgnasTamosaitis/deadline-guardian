@@ -121,22 +121,22 @@ export default function NewObligationPage() {
   }
   
   return (
-    <div className="max-w-2xl mx-auto">
-      <Button variant="ghost" asChild className="mb-4">
+    <div className="max-w-3xl mx-auto px-4 sm:px-6">
+      <Button variant="ghost" asChild className="mb-6 hover:bg-white/50">
         <Link href="/obligations">
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Obligations
         </Link>
       </Button>
       
-      <Card>
-        <CardHeader>
-          <CardTitle>Add Critical Obligation</CardTitle>
-          <CardDescription>
+      <Card className="shadow-xl border border-gray-200">
+        <CardHeader className="border-b bg-white pb-6">
+          <CardTitle className="text-2xl font-bold text-gray-900">Add Critical Obligation</CardTitle>
+          <CardDescription className="text-base text-gray-600 mt-2">
             Track deadlines with serious consequences to avoid penalties
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-8">
           <form action={formAction} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Title *</Label>

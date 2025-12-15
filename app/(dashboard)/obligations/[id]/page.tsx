@@ -109,7 +109,7 @@ export default function EditObligationPage() {
   
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
-      <div className="max-w-3xl mx-auto px-4">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
         <Button variant="ghost" asChild className="mb-6 hover:bg-white/50">
           <Link href="/obligations">
             <ArrowLeft className="w-4 h-4 mr-2" />
@@ -117,14 +117,14 @@ export default function EditObligationPage() {
           </Link>
         </Button>
         
-        <Card className="shadow-xl border-2">
-          <CardHeader className="border-b bg-gradient-to-r from-orange-50 to-red-50">
-            <CardTitle className="text-2xl">Edit Obligation</CardTitle>
-            <CardDescription className="text-base">
+        <Card className="shadow-xl border border-gray-200">
+          <CardHeader className="border-b bg-white pb-6">
+            <CardTitle className="text-2xl font-bold text-gray-900">Edit Obligation</CardTitle>
+            <CardDescription className="text-base text-gray-600 mt-2">
               Update your obligation details
             </CardDescription>
           </CardHeader>
-          <CardContent className="pt-6">
+          <CardContent className="pt-8">
             <form action={formAction} className="space-y-8">
               <div className="space-y-3">
                 <Label htmlFor="title" className="text-base font-semibold">Title *</Label>
