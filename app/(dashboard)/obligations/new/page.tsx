@@ -123,15 +123,16 @@ export default function NewObligationPage() {
   }
   
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6">
-      <Button variant="ghost" asChild className="mb-6 hover:bg-white/50">
-        <Link href="/obligations">
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          Back to Obligations
-        </Link>
-      </Button>
-      
-      <Card className="shadow-xl border border-gray-200">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-8">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6">
+        <Button variant="ghost" asChild className="mb-6 hover:bg-white/50">
+          <Link href="/obligations">
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back to Obligations
+          </Link>
+        </Button>
+        
+        <Card className="shadow-xl border border-gray-200">
         <CardHeader className="border-b bg-white pb-6">
           <CardTitle className="text-2xl font-bold text-gray-900">Add Critical Obligation</CardTitle>
           <CardDescription className="text-base text-gray-600 mt-2">
@@ -274,6 +275,7 @@ export default function NewObligationPage() {
           </form>
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
